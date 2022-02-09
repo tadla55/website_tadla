@@ -1,0 +1,72 @@
+---
+title: Palmer Penguins Visualizations
+author: R package build
+date: '2022-02-09'
+slug: palmer-penguins-visualizations
+categories:
+  - R
+tags:
+  - Penguins
+  - GGPOLT2
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="palmer-penguins" class="section level1">
+<h1>Palmer Penguins</h1>
+<p>Measurements for penguin species, island in <strong>Palmer Archipelago</strong>, size (flipper length, body mass, bill dimensions), and sex.
+## Call Libraries</p>
+<pre class="r"><code>library(tidyverse)
+library(palmerpenguins)</code></pre>
+<div id="describe-the-data" class="section level2">
+<h2>Describe the Data</h2>
+<pre class="r"><code>glimpse(penguins)</code></pre>
+<pre><code>## Rows: 344
+## Columns: 8
+## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…
+## $ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torgersen, Torgerse…
+## $ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, …
+## $ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, …
+## $ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195, 193, 190, 186…
+## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675, 3475, …
+## $ sex               &lt;fct&gt; male, female, female, NA, female, male, female, male…
+## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007…</code></pre>
+</div>
+<div id="scatter-plot" class="section level2">
+<h2>Scatter Plot</h2>
+<p>Start with the penguins data frame, map bill depth to the x-axis and map bill length to the y-axis. Represent each observation with a point and map species to the colour of each point. Title the plot “Bill depth and length”, add the subtitle “Dimensions for Adelie, Chinstrap, and Gentoo Penguins”, label the x and y axes as “Bill depth (mm)” and “Bill length (mm)”, respectively, label the legend “Species”, and add a caption for the data source. Finally, use a discrete colour scale that is designed to be perceived by viewers with common forms of colour blindness.</p>
+<pre class="r"><code>ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = &quot;Bill depth and length&quot;,
+       subtitle = &quot;Dimensions for Adelie, Chinstrap, and Gentoo Penguins&quot;,
+       x = &quot;Bill depth (mm)&quot;, y = &quot;Bill length (mm)&quot;,
+       colour = &quot;Species&quot;,
+       caption = &quot;Source: Palmer Station LTER / palmerpenguins package&quot;) +
+  scale_colour_viridis_d()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+## Scatter Plot Enchanced</p>
+<pre class="r"><code>ggplot(penguins,
+       aes(x = bill_depth_mm, 
+           y = bill_length_mm,
+           colour = species,
+           shape = species,
+           size = body_mass_g,
+           alpha = flipper_length_mm)) +
+  geom_point() +
+  scale_colour_viridis_d()</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="scatter-plot-with-facet-grid" class="section level2">
+<h2>Scatter Plot with Facet Grid</h2>
+<pre class="r"><code>ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+  facet_grid(species ~ island)</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
