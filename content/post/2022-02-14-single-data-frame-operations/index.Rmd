@@ -1,0 +1,158 @@
+---
+title: Single Data Frame Operations
+author: R package build
+date: '2022-02-14'
+slug: single-data-frame-operations
+categories: []
+tags: []
+---
+
+## Import file from GitHub
+
+## Call libraries
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url <- 'https://raw.githubusercontent.com/tadla55/tidyverse/main/hotels.csv'
+hotels <- read_csv(url)
+```
+
+## Select
+
+```{r}
+hotels %>%
+  select(hotel, lead_time)
+```
+
+```{r}
+hotels %>% # select a range of variables
+  select(hotel:arrival_date_month)
+```
+
+```{r}
+hotels %>% # select variables with certain characteristics
+  select(starts_with("arrival"))
+```
+
+## Arange
+
+```{r}
+hotels %>% #ascending
+  select(adults, children, babies) %>%
+  arrange(babies)
+```
+
+```{r}
+hotels %>% #descending
+  select(adults, children, babies) %>%
+  arrange(desc(babies))
+```
+
+## Slice
+
+```{r}
+# first five
+hotels %>%
+  slice(1:5)
+```
+
+## Filter
+
+```{r}
+# bookings in City Hotels
+hotels %>%
+  filter(hotel == "City Hotel")
+```
+
+```{r}
+hotels %>%
+  filter( 
+    adults == 0,
+    children >= 1
+    ) %>% 
+  select(adults, babies, children)
+```
+
+## Distinct 
+
+```{r}
+hotels %>% 
+  distinct(market_segment) %>%
+  arrange(market_segment)
+```
+
+## Count
+
+```{r}
+hotels %>%
+  count(market_segment)
+```
+
+```{r}
+hotels %>% # count and arrange
+  count(market_segment) %>%
+  arrange(n)
+```
+
+## Mutate 
+
+```{r}
+hotels %>%
+  mutate(little_ones = children + babies) %>%
+  select(children, babies, little_ones) %>%
+  arrange(desc(little_ones))
+```
+
+```{r}
+# Resort Hotel
+hotels %>%
+  mutate(little_ones = children + babies) %>%
+  filter(
+    little_ones >= 1,
+    hotel == "Resort Hotel"
+    ) %>%
+  select(hotel, little_ones)
+```
+
+```{r}
+hotels %>%
+  mutate(little_ones = children + babies) %>%
+  count(hotel, little_ones) %>%
+  mutate(prop = n / sum(n))
+```
+
+## Sumarise
+
+```{r}
+hotels %>%
+  summarise(mean_adr = mean(adr))
+```
+
+```{r}
+hotels %>%
+  summarise(
+    min_adr = min(adr),
+    mean_adr = mean(adr),
+    median_adr = median(adr),
+    max_adr = max(adr)
+    )
+```
+
+## group_by
+
+```{r}
+hotels %>%
+  group_by(hotel) %>%
+  summarise(mean_adr = mean(adr))
+```
+
+
+
+
+
+
+
+

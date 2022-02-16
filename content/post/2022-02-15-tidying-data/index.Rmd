@@ -1,0 +1,73 @@
+---
+title: Tidying Data
+author: R package build
+date: '2022-02-15'
+slug: tidying-data
+categories: []
+tags: []
+---
+## Import file from GitHub
+
+## Call libraries
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url <- 'https://raw.githubusercontent.com/tadla55/tidyverse/main/professions.csv'
+professions <- read_csv(url)
+hotels <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/hotels.csv')
+dates <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/dates.csv')
+works <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/works.csv')
+enrolment <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/enrolment.csv')
+survey <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/survey.csv')
+purchases <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/purchases.csv')
+prices <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/prices.csv')
+trump <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/trump.csv')
+approval_topline <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/approval_topline.csv')
+names(professions)
+```
+
+## Pivoting Data
+
+## Pivot
+
+```{r}
+trump_longer <- trump %>%
+  pivot_longer(
+    cols = c(approval, disapproval),
+    names_to = "rating_type",
+    values_to = "rating_value"
+  )
+trump_longer
+```
+
+## Plot
+
+```{r}
+ggplot(trump_longer, 
+       aes(x = date, y = rating_value, color = rating_type, group = rating_type)) +
+  geom_line() +
+  facet_wrap(~ subgroup)
+```
+
+```{r}
+ggplot(trump_longer, 
+       aes(x = date, y = rating_value, 
+           color = rating_type, group = rating_type)) +
+  geom_line() +
+  facet_wrap(~ subgroup) +
+  scale_color_manual(values = c("darkgreen", "orange")) + 
+  labs( 
+    x = "Date", y = "Rating", 
+    color = NULL, 
+    title = "How (un)popular is Donald Trump?", 
+    subtitle = "Estimates based on polls of all adults and polls of likely/registered voters", 
+    caption = "Source: FiveThirtyEight modeling estimates" 
+  ) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+

@@ -1,0 +1,171 @@
+---
+title: Tidying Data
+author: R package build
+date: '2022-02-15'
+slug: tidying-data
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="import-file-from-github" class="section level2">
+<h2>Import file from GitHub</h2>
+</div>
+<div id="call-libraries" class="section level2">
+<h2>Call libraries</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>url &lt;- &#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/professions.csv&#39;
+professions &lt;- read_csv(url)</code></pre>
+<pre><code>## Rows: 10 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): name, profession
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>hotels &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/hotels.csv&#39;)</code></pre>
+<pre><code>## Rows: 119390 Columns: 32
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (13): hotel, arrival_date_month, meal, country, market_segment, distrib...
+## dbl  (18): is_canceled, lead_time, arrival_date_year, arrival_date_week_numb...
+## date  (1): reservation_status_date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>dates &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/dates.csv&#39;)</code></pre>
+<pre><code>## Rows: 8 Columns: 3
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): name
+## dbl (2): birth_year, death_year
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>works &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/works.csv&#39;)</code></pre>
+<pre><code>## Rows: 9 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): name, known_for
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>enrolment &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/enrolment.csv&#39;)</code></pre>
+<pre><code>## Rows: 3 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): name
+## dbl (1): id
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>survey &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/survey.csv&#39;)</code></pre>
+<pre><code>## Rows: 4 Columns: 3
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): name, username
+## dbl (1): id
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>purchases &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/purchases.csv&#39;)</code></pre>
+<pre><code>## Rows: 5 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): item
+## dbl (1): customer_id
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>prices &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/prices.csv&#39;)</code></pre>
+<pre><code>## Rows: 5 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): item
+## dbl (1): price
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>trump &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/trump.csv&#39;)</code></pre>
+<pre><code>## Rows: 2702 Columns: 4
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (1): subgroup
+## dbl  (2): approval, disapproval
+## date (1): date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>approval_topline &lt;- read_csv(&#39;https://raw.githubusercontent.com/tadla55/tidyverse/main/approval_topline.csv&#39;)</code></pre>
+<pre><code>## Rows: 4053 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (4): president, subgroup, modeldate, timestamp
+## dbl (6): approve_estimate, approve_hi, approve_lo, disapprove_estimate, disa...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>names(professions)</code></pre>
+<pre><code>## [1] &quot;name&quot;       &quot;profession&quot;</code></pre>
+</div>
+<div id="pivoting-data" class="section level2">
+<h2>Pivoting Data</h2>
+</div>
+<div id="pivot" class="section level2">
+<h2>Pivot</h2>
+<pre class="r"><code>trump_longer &lt;- trump %&gt;%
+  pivot_longer(
+    cols = c(approval, disapproval),
+    names_to = &quot;rating_type&quot;,
+    values_to = &quot;rating_value&quot;
+  )
+trump_longer</code></pre>
+<pre><code>## # A tibble: 5,404 × 4
+##    subgroup date       rating_type rating_value
+##    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;              &lt;dbl&gt;
+##  1 Voters   2020-10-04 approval            44.7
+##  2 Voters   2020-10-04 disapproval         52.2
+##  3 Adults   2020-10-04 approval            43.2
+##  4 Adults   2020-10-04 disapproval         52.6
+##  5 Adults   2020-10-03 approval            43.2
+##  6 Adults   2020-10-03 disapproval         52.6
+##  7 Voters   2020-10-03 approval            45.0
+##  8 Voters   2020-10-03 disapproval         51.7
+##  9 Adults   2020-10-02 approval            43.3
+## 10 Adults   2020-10-02 disapproval         52.4
+## # … with 5,394 more rows</code></pre>
+</div>
+<div id="plot" class="section level2">
+<h2>Plot</h2>
+<pre class="r"><code>ggplot(trump_longer, 
+       aes(x = date, y = rating_value, color = rating_type, group = rating_type)) +
+  geom_line() +
+  facet_wrap(~ subgroup)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(trump_longer, 
+       aes(x = date, y = rating_value, 
+           color = rating_type, group = rating_type)) +
+  geom_line() +
+  facet_wrap(~ subgroup) +
+  scale_color_manual(values = c(&quot;darkgreen&quot;, &quot;orange&quot;)) + 
+  labs( 
+    x = &quot;Date&quot;, y = &quot;Rating&quot;, 
+    color = NULL, 
+    title = &quot;How (un)popular is Donald Trump?&quot;, 
+    subtitle = &quot;Estimates based on polls of all adults and polls of likely/registered voters&quot;, 
+    caption = &quot;Source: FiveThirtyEight modeling estimates&quot; 
+  ) + 
+  theme_minimal() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>

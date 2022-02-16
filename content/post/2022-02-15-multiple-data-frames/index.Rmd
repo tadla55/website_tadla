@@ -1,0 +1,94 @@
+---
+title: Multiple Data Frames
+author: R package build
+date: '2022-02-15'
+slug: multiple-data-frames
+categories: []
+tags: []
+---
+
+## Import file from GitHub
+
+## Call libraries
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url <- 'https://raw.githubusercontent.com/tadla55/tidyverse/main/professions.csv'
+professions <- read_csv(url)
+dates <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/dates.csv')
+works <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/works.csv')
+enrolment <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/enrolment.csv')
+survey <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/survey.csv')
+purchases <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/purchases.csv')
+prices <- read_csv('https://raw.githubusercontent.com/tadla55/tidyverse/main/prices.csv')
+names(professions)
+```
+
+## Left join and right join, more joins
+
+```{r}
+professions %>%
+  left_join(dates)
+```
+```{r}
+professions %>%
+  right_join(dates)
+```
+
+```{r}
+dates %>%
+  full_join(works)
+```
+
+```{r}
+dates %>%
+  inner_join(works)
+```
+
+```{r}
+dates %>%
+  semi_join(works)
+```
+
+```{r}
+dates %>%
+  anti_join(works)
+```
+
+```{r}
+professions %>%
+  left_join(dates) %>%
+  left_join(works)
+```
+
+## Students Records
+
+```{r}
+enrolment %>% 
+  left_join(survey, by = "id")
+```
+
+## Grocery Sales
+
+```{r}
+purchases %>% 
+  left_join(prices) %>%
+  summarise(total_revenue = sum(price))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
