@@ -1,0 +1,223 @@
+---
+title: Data Types
+author: R package build
+date: '2022-02-21'
+slug: data-types
+categories: []
+tags: []
+---
+
+## Cat Lovers
+```{r}
+library(tidyverse)
+```
+
+## Get Data
+```{r}
+cat_lovers <- read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/cat-lovers.csv")
+```
+
+## Summaries Cat Lovers Data Sets
+
+```{r}
+cat_lovers %>%
+  summarise(mean_cats = mean(number_of_cats, na.rm = TRUE))
+```
+
+```{r}
+glimpse(cat_lovers)
+```
+
+
+
+### Fixing the bad data in the numeric column
+
+```{r}
+cat_lovers %>%
+  mutate(number_of_cats = case_when(
+    name == "Ginger Clark" ~ 2,
+    name == "Doug Bass"    ~ 3,
+    TRUE                   ~ as.numeric(number_of_cats)
+    )) %>%
+  summarise(mean_cats = mean(number_of_cats))
+```
+
+## Numeric Data Summerised
+```{r}
+cat_lovers %>%
+  mutate(
+    number_of_cats = case_when(
+      name == "Ginger Clark" ~ "2",
+      name == "Doug Bass"    ~ "3",
+      TRUE                   ~ number_of_cats
+      ),
+    number_of_cats = as.numeric(number_of_cats)
+    ) %>%
+  summarise(mean_cats = mean(number_of_cats))
+```
+
+## Logical & character
+
+```{r}
+typeof(TRUE)
+```
+
+```{r}
+typeof("hello")
+```
+
+##Double & integer
+```{r}
+typeof(1.335)
+```
+
+```{r}
+typeof(7)
+```
+
+```{r}
+typeof(7L)
+```
+
+```{r}
+typeof(1:3)
+```
+
+## Concatenation
+```{r}
+c(1, 2, 3)
+```
+
+```{r}
+c("Hello", "World!")
+```
+
+```{r}
+c(c("hi", "hello"), c("bye", "jello"))
+```
+
+## Converting between types
+
+```{r}
+x <- 1:3
+x
+```
+
+```{r}
+typeof(x)
+```
+
+```{r}
+y <- as.character(x)
+y
+```
+
+```{r}
+typeof(y)
+```
+
+```{r}
+x <- c(TRUE, FALSE)
+x
+```
+
+```{r}
+typeof(x)
+```
+
+```{r}
+y <- as.numeric(x)
+y
+```
+
+```{r}
+typeof(y)
+```
+
+```{r}
+c(1, "Hello")
+```
+
+```{r}
+c(FALSE, 3L)
+```
+
+```{r}
+c(1.2, 3L)
+```
+
+```{r}
+c(2L, "two")
+```
+
+## Special Values
+
+```{r}
+pi / 0
+```
+
+```{r}
+0 / 0
+```
+
+```{r}
+1/0 - 1/0
+```
+
+```{r}
+1/0 + 1/0
+```
+
+```{r}
+x <- c(1, 2, 3, 4, NA)
+mean(x)
+```
+
+```{r}
+mean(x, na.rm = TRUE)
+```
+
+```{r}
+summary(x)
+```
+ ## NAs are logical
+ 
+```{r}
+typeof(NA)
+```
+ 
+```{r}
+# TRUE or NA
+TRUE | NA
+```
+
+```{r}
+# FALSE or NA
+FALSE | NA
+```
+
+```{r}
+TRUE | TRUE  # if NA was TRUE
+```
+
+```{r}
+TRUE | FALSE # if NA was FALSE
+```
+
+```{r}
+FALSE | TRUE  # if NA was TRUE
+```
+
+```{r}
+FALSE | FALSE # if NA was FALSE
+```
+
+
+
+
+
+
+
+
+
+
