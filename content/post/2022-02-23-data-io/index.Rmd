@@ -1,0 +1,169 @@
+---
+title: Data IO
+author: R package build
+date: '2022-02-23'
+slug: data-io
+categories: []
+tags: []
+---
+## Libraries
+```{r}
+library(tidyverse)
+library(readxl)
+library(readr)
+```
+
+## Get Data
+```{r}
+nobel <- read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/nobel.csv")
+nobel
+```
+
+## Writing data
+
+```{r}
+df <- tribble(
+  ~x, ~y,
+  1,  "a",
+  2,  "b",
+  3,  "c"
+)
+write_csv(df, file = "data/df.csv")
+```
+
+```{r}
+read_csv("data/df.csv")
+```
+
+## Variable Names
+
+```{r}
+edibnb_badnames <- read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/edibnb-badnames.csv")
+names(edibnb_badnames)
+```
+
+## Option 1 - Define column names
+
+```{r}
+edibnb_col_names <- read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/edibnb-badnames.csv",
+                             col_names = c("id", "price", 
+                                           "neighbourhood", "accommodates",
+                                           "bathroom", "bedroom", 
+                                           "bed", "review_scores_rating", 
+                                           "n_reviews", "url"))
+names(edibnb_col_names)
+```
+
+## Option 2 - Format text to snake_case
+
+```{r}
+edibnb_clean_names <- read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/edibnb-badnames.csv") %>%
+  janitor::clean_names()
+names(edibnb_clean_names)
+```
+
+## VAriable types
+
+```{r}
+read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/df-na.csv")
+```
+
+## Option 1. Explicit NAs
+
+```{r}
+read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/df-na.csv", 
+         na = c("", "NA", ".", "9999", "Not applicable"))
+```
+
+## Option 2. Specify column types
+
+```{r}
+read_csv("https://raw.githubusercontent.com/tadla55/tidyverse/main/df-na.csv", col_types = list(col_double(), 
+                                            col_character(), 
+                                            col_character()))
+```
+
+## Favourite food 
+
+```{r}
+fav_food <- read_excel("data/favourite-food.xlsx")
+fav_food
+```
+
+```{r}
+fav_food <- read_excel("data/favourite-food.xlsx") %>%
+  janitor::clean_names()
+fav_food
+```
+
+```{r}
+fav_food <- read_excel("data/favourite-food.xlsx",
+                       na = c("N/A", "99999")) %>%
+  janitor::clean_names()
+fav_food
+```
+
+
+## Make age numeric
+
+```{r}
+fav_food <- fav_food %>%
+  mutate(
+    age = if_else(age == "five", "5", age),
+    age = as.numeric(age)
+    )
+glimpse(fav_food)
+```
+
+## Socio-economic status
+
+```{r}
+fav_food %>%
+  count(ses)
+```
+
+```{r}
+fav_food <- fav_food %>%
+  mutate(ses = fct_relevel(ses, "Low", "Middle", "High"))
+fav_food %>%
+  count(ses)
+```
+
+## Puting it all togheter 
+
+```{r}
+fav_food <- read_excel("data/favourite-food.xlsx", na = c("N/A", "99999")) %>%
+  janitor::clean_names() %>%
+  mutate(
+    age = if_else(age == "five", "5", age), 
+    age = as.numeric(age),
+    ses = fct_relevel(ses, "Low", "Middle", "High")
+  )
+fav_food
+```
+
+## Out and back in
+
+```{r}
+write_csv(fav_food, file = "data/fav-food-clean.csv")
+fav_food_clean <- read_csv("data/fav-food-clean.csv")
+```
+
+```{r}
+fav_food_clean %>%
+  count(ses)
+```
+
+## read_rds() and write_rds()
+
+```{r}
+write_rds(fav_food, file = "data/fav-food-clean.rds")
+fav_food_clean <- read_rds("data/fav-food-clean.rds")
+fav_food_clean %>%
+  count(ses)
+```
+
+
+
+
+
