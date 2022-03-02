@@ -1,0 +1,57 @@
+---
+title: 'Professor Evaluations '
+author: R package build
+date: '2022-02-28'
+slug: professor-evaluations
+categories: []
+tags: []
+---
+# Preliminaries
+## Importing Libraries and Data
+```{r}
+library(moderndive)
+library(tidyverse)
+library(skimr)
+library(gapminder)
+```
+
+## Importing Data
+
+```{r}
+evals_ch5 <- evals %>%
+  select(ID, score, bty_avg, age)
+```
+
+## Explor the Data
+```{r}
+glimpse(evals_ch5)
+```
+
+## Sample the Data
+
+```{r}
+evals_ch5 %>%
+  sample_n(size = 5)
+```
+
+## Mean and Median of BIY and score
+
+```{r}
+evals_ch5 %>%
+  summarize(mean_bty_avg = mean(bty_avg), mean_score = mean(score),
+            median_bty_avg = median(bty_avg), median_score = median(score))
+```
+
+## Five Number Summary
+
+```{r}
+evals_ch5 %>% select(score, bty_avg) %>% skim()
+```
+
+## Scatter Plot of Score Vs Bty_score
+
+```{r}
+plot(evals_ch5$score, evals_ch5$bty_avg)
+```
+
+
