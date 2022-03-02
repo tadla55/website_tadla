@@ -54,4 +54,59 @@ evals_ch5 %>% select(score, bty_avg) %>% skim()
 plot(evals_ch5$score, evals_ch5$bty_avg)
 ```
 
+## Correlation Between Score and BTY_Score
+```{r}
+evals_ch5 %>% 
+  get_correlation(formula = score ~ bty_avg)
+evals_ch5 %>% 
+  summarize(correlation = cor(score, bty_avg))
+```
+
+## Scatter Plot: Score Vs BTY_Score
+
+```{r}
+ggplot(evals_ch5, aes(x = bty_avg, y = score)) +
+  geom_point() +
+  labs(x = "Beauty Score", 
+       y = "Teaching Score",
+       title = "Scatterplot of relationship of teaching and beauty scores")
+```
+
+## Scatter Plot with Jitter
+```{r}
+ggplot(evals_ch5, aes(x = bty_avg, y = score)) +
+  geom_jitter() +
+  labs(x = "Beauty Score", y = "Teaching Score",
+       title = "Scatterplot of relationship of teaching and beauty scores")
+```
+
+## Linear Regression Line of Scatter Plot
+
+```{r}
+ggplot(evals_ch5, aes(x = bty_avg, y = score)) +
+  geom_point() +
+  labs(x = "Beauty Score", y = "Teaching Score",
+       title = "Relationship between teaching and beauty scores") +  
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+## Linear regression
+
+```{r}
+# Fit regression model:
+score_model <- lm(score ~ bty_avg, data = evals_ch5)
+# Get regression table:
+get_regression_table(score_model)
+```
+
+## Fitting the Regression Model
+
+```{r}
+regression_points <- get_regression_points(score_model)
+regression_points
+```
+
+
+
+
 
