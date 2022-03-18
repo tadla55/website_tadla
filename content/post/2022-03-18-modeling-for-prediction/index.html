@@ -1,0 +1,202 @@
+---
+title: Modeling for Prediction
+author: R package build
+date: '2022-03-18'
+slug: modeling-for-prediction
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="what-are-the-advantages-and-disadvantages-of-k-fold-cross-validation-relative-to-single-split-validation-set-approach" class="section level1">
+<h1>What are the advantages and disadvantages of k-fold cross validation relative to single Split Validation set approach?</h1>
+<div id="advantages" class="section level3">
+<h3>Advantages</h3>
+<ul>
+<li>The implementation of validate method is easier and can be done only once.</li>
+</ul>
+</div>
+<div id="disadvantage" class="section level3">
+<h3>Disadvantage</h3>
+<ul>
+<li>The test error rate can be highly variable based on the observations. Also there is only a subset of the observations are used to fit the model.</li>
+</ul>
+</div>
+</div>
+<div id="what-are-the-advantages-and-disadvantages-of-k-fold-cross-validation-relative-to-loocv" class="section level1">
+<h1>What are the advantages and disadvantages of k-fold cross validation relative to LOOCV?</h1>
+<div id="advantages-1" class="section level3">
+<h3>Advantages</h3>
+<ul>
+<li>Less variability in test-error because more observations are used for each prediction. Larger training set which reduces the bias and test errors.</li>
+</ul>
+</div>
+<div id="disadvantage-1" class="section level3">
+<h3>Disadvantage</h3>
+<ul>
+<li>There is overlap in the observation for each model causing higher variance.</li>
+<li>More computational power and time to run a K-fold cross validation.</li>
+</ul>
+</div>
+</div>
+<div id="discuss-pros-and-cons-of-bootstrapping" class="section level1">
+<h1>Discuss Pros and cons of Bootstrapping</h1>
+<div id="pros" class="section level2">
+<h2>Pros</h2>
+<ul>
+<li>Normalize data set</li>
+<li>Increase size of data set</li>
+<li>Deriving of confidence interval and standard error</li>
+</ul>
+</div>
+<div id="cons" class="section level2">
+<h2>Cons</h2>
+<ul>
+<li>Doesn’t give new information about population</li>
+<li>It undervalues rare and extreme values in data set</li>
+</ul>
+</div>
+</div>
+<div id="k-fold-cross-validation" class="section level1">
+<h1>K-fold cross validation</h1>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ISLR)
+library(boot)
+real_estate_data &lt;- read_csv(&quot;https://raw.githubusercontent.com/tadla55/website_tadla/master/Real%20estate%20valuation%20data%20set.csv&quot;)</code></pre>
+<pre><code>## Rows: 414 Columns: 8</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl (8): No, X1_transaction_date, X2_house_age, X3_distance_to_the_nearest_M...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>## Set Seed: To reproduce the sampling for train - test split
+set.seed(1)
+head(real_estate_data)</code></pre>
+<pre><code>## # A tibble: 6 × 8
+##      No X1_transaction_date X2_house_age X3_distance_to_the_ne… X4_number_of_co…
+##   &lt;dbl&gt;               &lt;dbl&gt;        &lt;dbl&gt;                  &lt;dbl&gt;            &lt;dbl&gt;
+## 1     1               2013.         32                     84.9               10
+## 2     2               2013.         19.5                  307.                 9
+## 3     3               2014.         13.3                  562.                 5
+## 4     4               2014.         13.3                  562.                 5
+## 5     5               2013.          5                    391.                 5
+## 6     6               2013.          7.1                 2175.                 3
+## # … with 3 more variables: X5_latitude &lt;dbl&gt;, X6_longitude &lt;dbl&gt;,
+## #   Y_house_price_of_unit_area &lt;dbl&gt;</code></pre>
+<pre class="r"><code>dim(real_estate_data)</code></pre>
+<pre><code>## [1] 414   8</code></pre>
+<pre class="r"><code>## Create an index to random sample 50% records from Auto
+train &lt;- sample(414, 207)</code></pre>
+<pre class="r"><code>## Make the variables in Auto data set as locally accessible objects
+attach(real_estate_data)
+lm.fit &lt;- lm(X2_house_age~Y_house_price_of_unit_area, data = real_estate_data, subset = train)
+lm.fit</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = X2_house_age ~ Y_house_price_of_unit_area, data = real_estate_data, 
+##     subset = train)
+## 
+## Coefficients:
+##                (Intercept)  Y_house_price_of_unit_area  
+##                    25.3576                     -0.1906</code></pre>
+<pre class="r"><code>K = 104
+error.x1 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X1_transaction_date~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x1[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x2 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X2_house_age~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x2[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x3 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X3_distance_to_the_nearest_MRT_station~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x3[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x4 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X4_number_of_convenience_stores~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x4[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x5 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X5_latitude~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x5[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x6 &lt;- rep(0, 5)
+degree &lt;- 1:5
+for (d in degree){
+  glm.fit &lt;- glm(X6_longitude~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x6[d] &lt;- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x1</code></pre>
+<pre><code>## [1] 0.07930962 0.07981687 0.09392954 0.08305730 0.27892977</code></pre>
+<pre class="r"><code>error.x2</code></pre>
+<pre><code>## [1]  125.0185  127.0436  162.4392 2220.3257  546.4214</code></pre>
+<pre class="r"><code>error.x3</code></pre>
+<pre><code>## [1]   887295.4   819391.4   631378.8  3573796.6 67002112.2</code></pre>
+<pre class="r"><code>error.x4</code></pre>
+<pre><code>## [1]  5.940441  5.377990  5.422771 35.146291 19.562792</code></pre>
+<pre class="r"><code>error.x5</code></pre>
+<pre><code>## [1] 1.094900e-04 1.051456e-04 8.870963e-05 5.589514e-04 3.538582e-03</code></pre>
+<pre class="r"><code>error.x6</code></pre>
+<pre><code>## [1] 0.0001736606 0.0001589755 0.0001634157 0.0002168210 0.0061326773</code></pre>
+<pre class="r"><code>plot(degree, error.x1, type = &quot;b&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>plot(degree, error.x2, type = &quot;b&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>plot(degree, error.x3, type = &quot;b&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+<pre class="r"><code>plot(degree, error.x4, type = &quot;b&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-4.png" width="672" /></p>
+<pre class="r"><code>plot(degree, error.x5, type = &quot;b&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-5.png" width="672" /></p>
+<pre class="r"><code>plot(degree, error.x6, type = &quot;b&quot;)
+lines(degree, error.x2, type = &quot;b&quot;, col = &quot;red&quot;)
+lines(degree, error.x1, type = &quot;b&quot;, col = &quot;yellow&quot;)
+lines(degree, error.x4, type = &quot;b&quot;, col = &quot;orange&quot;)
+lines(degree, error.x5, type = &quot;b&quot;, col = &quot;blue&quot;)
+lines(degree, error.x6, type = &quot;b&quot;, col = &quot;green&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-6.png" width="672" /></p>
+</div>
+<div id="bootstrap-validation" class="section level1">
+<h1>Bootstrap validation</h1>
+<div id="estimation-of-accuracy-of-a-linear-model" class="section level3">
+<h3>Estimation of Accuracy of a Linear Model</h3>
+<pre class="r"><code>## Estimation of Accuracy of a Linear Model
+boot.fn &lt;- function(data, index){
+  return(coef(lm(X5_latitude~Y_house_price_of_unit_area, data=data, subset=index)))
+}</code></pre>
+<pre class="r"><code>set.seed(1)
+boot.fn(real_estate_data,sample(414, 414, replace=T))</code></pre>
+<pre><code>##                (Intercept) Y_house_price_of_unit_area 
+##               24.954110345                0.000389347</code></pre>
+<pre class="r"><code>boot.output &lt;- boot(real_estate_data, boot.fn, 100)
+plot(boot.output)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>

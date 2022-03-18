@@ -1,0 +1,153 @@
+---
+title: Modeling for Prediction
+author: R package build
+date: '2022-03-18'
+slug: modeling-for-prediction
+categories: []
+tags: []
+---
+# What are the advantages and disadvantages of k-fold cross validation relative to single Split Validation set approach?
+
+### Advantages 
+- The implementation of validate method is easier and can be done only once.
+
+### Disadvantage
+- The test error rate can be highly variable based on the observations. Also there is only a subset of the observations are used to fit the model.
+
+# What are the advantages and disadvantages of k-fold cross validation relative to LOOCV?
+
+### Advantages
+- Less variability in test-error because more observations are used for each prediction. Larger training set which reduces the bias and test errors.
+
+### Disadvantage
+- There is overlap in the observation for each model causing higher variance.
+- More computational power and time to run a K-fold cross validation.
+
+# Discuss Pros and cons of Bootstrapping  
+
+## Pros 
+- Normalize data set
+- Increase size of data set
+- Deriving of confidence interval and standard error
+
+## Cons
+- Doesn't give new information about population
+- It undervalues rare and extreme values in data set
+
+# K-fold cross validation
+
+```{r}
+library(tidyverse)
+library(ISLR)
+library(boot)
+real_estate_data <- read_csv("https://raw.githubusercontent.com/tadla55/website_tadla/master/Real%20estate%20valuation%20data%20set.csv")
+```
+
+```{r}
+## Set Seed: To reproduce the sampling for train - test split
+set.seed(1)
+head(real_estate_data)
+dim(real_estate_data)
+## Create an index to random sample 50% records from Auto
+train <- sample(414, 207)
+```
+
+```{r}
+## Make the variables in Auto data set as locally accessible objects
+attach(real_estate_data)
+lm.fit <- lm(X2_house_age~Y_house_price_of_unit_area, data = real_estate_data, subset = train)
+lm.fit
+```
+
+```{r}
+K = 104
+error.x1 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X1_transaction_date~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x1[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x2 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X2_house_age~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x2[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x3 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X3_distance_to_the_nearest_MRT_station~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x3[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x4 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X4_number_of_convenience_stores~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x4[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x5 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X5_latitude~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x5[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x6 <- rep(0, 5)
+degree <- 1:5
+for (d in degree){
+  glm.fit <- glm(X6_longitude~poly(Y_house_price_of_unit_area,d), data = real_estate_data)
+  error.x6[d] <- cv.glm(real_estate_data, glm.fit, K = K)$delta[1]
+}
+
+error.x1
+error.x2
+error.x3
+error.x4
+error.x5
+error.x6
+```
+
+
+
+```{r}
+plot(degree, error.x1, type = "b")
+plot(degree, error.x2, type = "b")
+plot(degree, error.x3, type = "b")
+plot(degree, error.x4, type = "b")
+plot(degree, error.x5, type = "b")
+plot(degree, error.x6, type = "b")
+lines(degree, error.x2, type = "b", col = "red")
+lines(degree, error.x1, type = "b", col = "yellow")
+lines(degree, error.x4, type = "b", col = "orange")
+lines(degree, error.x5, type = "b", col = "blue")
+lines(degree, error.x6, type = "b", col = "green")
+
+```
+
+# Bootstrap validation
+
+### Estimation of Accuracy of a Linear Model
+```{r}
+## Estimation of Accuracy of a Linear Model
+boot.fn <- function(data, index){
+  return(coef(lm(X5_latitude~Y_house_price_of_unit_area, data=data, subset=index)))
+}
+```
+```{r}
+set.seed(1)
+boot.fn(real_estate_data,sample(414, 414, replace=T))
+```
+```{r}
+boot.output <- boot(real_estate_data, boot.fn, 100)
+plot(boot.output)
+```
+
+
+
+
+
+
