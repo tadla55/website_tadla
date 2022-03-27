@@ -1,0 +1,92 @@
+---
+title: Regression Models
+author: R package build
+date: '2022-03-26'
+slug: regression-models
+categories: []
+tags: []
+---
+
+## Libraries
+```{r}
+library(tidyverse)
+library(ISLR)
+library(boot)
+library(readxl)
+```
+
+#Get Data
+```{r}
+df <- read_excel("data/Professor_Proposes_Data.xlsx")
+df$Price <- as.numeric(df$Price)
+df$Wholesaler <- as.factor(df$Wholesaler)
+```
+
+```{r}
+#Set seed
+set.seed(1)
+head(df)
+dim(df)
+#Index
+train <- sample(440,220)
+head(train)
+```
+
+
+```{r}
+# focus on Wholesaler 1 and 2 rather than Wholesaler 3
+dfw <- df %>%
+    filter(Wholesaler == 3)
+
+max(dfw$Carat)
+```
+# Graph
+```{r}
+df %>%
+    ggplot(aes(x=Carat, y = Price, color = Wholesaler)) +
+        geom_point()      
+```
+
+
+
+```{r}
+dfw23 <- df %>%
+  filter(Wholesaler == 2 | Wholesaler == 1)
+
+dim(dfw23)
+
+dfw23 %>% 
+  ggplot(aes(x = Carat, y = Price, color = Wholesaler 
+    )) +
+  geom_point()
+attach(dfw23)
+```
+
+
+# Boot Function
+
+```{r}
+# Dimension of new data frame
+dim(dfw23)
+```
+
+```{r}
+boot.fn <- function(data, index) {
+  return(coef(lm(Price~Carat + Colour + Clarity+ Cut + Certification + Polish + Symmetry, data = data , subset = index)))
+}
+set.seed(1)
+boot.fn(dfw23, sample(240, 240, replace=T))
+```
+
+# Answer
+The price that the professor found is $3100 for a specific diamond. I looked at the data and added up all of the coefficients to get the price from my calculations. The price that I found equals to 2,844 dollars which is 300 dollars off the original value. If the intercept value was not included than the predicted value would be 3,132 dollars.
+
+
+
+
+
+
+
+
+
+

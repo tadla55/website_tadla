@@ -195,7 +195,7 @@ boot.fn &lt;- function(data, index){
 boot.fn(real_estate_data,sample(414, 414, replace=T))</code></pre>
 <pre><code>##                (Intercept) Y_house_price_of_unit_area 
 ##               24.954110345                0.000389347</code></pre>
-<pre class="r"><code>boot.output &lt;- boot(real_estate_data, boot.fn, 100)
+<pre class="r"><code>boot.output &lt;- boot(real_estate_data, boot.fn, 1000)
 plot(boot.output)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>

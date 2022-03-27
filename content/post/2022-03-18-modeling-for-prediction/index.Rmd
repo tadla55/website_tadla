@@ -142,7 +142,7 @@ set.seed(1)
 boot.fn(real_estate_data,sample(414, 414, replace=T))
 ```
 ```{r}
-boot.output <- boot(real_estate_data, boot.fn, 100)
+boot.output <- boot(real_estate_data, boot.fn, 1000)
 plot(boot.output)
 ```
 

@@ -1,0 +1,104 @@
+---
+title: Regression Models
+author: R package build
+date: '2022-03-26'
+slug: regression-models
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="libraries" class="section level2">
+<h2>Libraries</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ISLR)
+library(boot)
+library(readxl)</code></pre>
+<p>#Get Data</p>
+<pre class="r"><code>df &lt;- read_excel(&quot;data/Professor_Proposes_Data.xlsx&quot;)
+df$Price &lt;- as.numeric(df$Price)
+df$Wholesaler &lt;- as.factor(df$Wholesaler)</code></pre>
+<pre class="r"><code>#Set seed
+set.seed(1)
+head(df)</code></pre>
+<pre><code>## # A tibble: 6 × 9
+##   Carat Colour Clarity Cut   Certification Polish Symmetry Price Wholesaler
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt; &lt;fct&gt;     
+## 1  0.92 I      SI2     G     AGS           V      V         3000 1         
+## 2  0.92 I      SI2     V     AGS           G      G         3000 1         
+## 3  0.82 F      SI2     I     GIA           X      X         3004 1         
+## 4  0.81 G      SI1     I     GIA           X      V         3004 1         
+## 5  0.9  J      VS2     V     GIA           V      V         3006 1         
+## 6  0.87 F      SI2     I     AGS           G      V         3007 1</code></pre>
+<pre class="r"><code>dim(df)</code></pre>
+<pre><code>## [1] 440   9</code></pre>
+<pre class="r"><code>#Index
+train &lt;- sample(440,220)
+head(train)</code></pre>
+<pre><code>## [1] 324 167 129 418 299 270</code></pre>
+<pre class="r"><code># focus on Wholesaler 1 and 2 rather than Wholesaler 3
+dfw &lt;- df %&gt;%
+    filter(Wholesaler == 3)
+
+max(dfw$Carat)</code></pre>
+<pre><code>## [1] 0.3</code></pre>
+</div>
+<div id="graph" class="section level1">
+<h1>Graph</h1>
+<pre class="r"><code>df %&gt;%
+    ggplot(aes(x=Carat, y = Price, color = Wholesaler)) +
+        geom_point()      </code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>dfw23 &lt;- df %&gt;%
+  filter(Wholesaler == 2 | Wholesaler == 1)
+
+dim(dfw23)</code></pre>
+<pre><code>## [1] 240   9</code></pre>
+<pre class="r"><code>dfw23 %&gt;% 
+  ggplot(aes(x = Carat, y = Price, color = Wholesaler 
+    )) +
+  geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>attach(dfw23)</code></pre>
+</div>
+<div id="boot-function" class="section level1">
+<h1>Boot Function</h1>
+<pre class="r"><code># Dimension of new data frame
+dim(dfw23)</code></pre>
+<pre><code>## [1] 240   9</code></pre>
+<pre class="r"><code>boot.fn &lt;- function(data, index) {
+  return(coef(lm(Price~Carat + Colour + Clarity+ Cut + Certification + Polish + Symmetry, data = data , subset = index)))
+}
+set.seed(1)
+boot.fn(dfw23, sample(240, 240, replace=T))</code></pre>
+<pre><code>##      (Intercept)            Carat          ColourE          ColourF 
+##       -288.74062       2686.45720         18.51261       -224.88330 
+##          ColourG          ColourH          ColourI          ColourJ 
+##       -238.96022       -253.52221       -341.90000       -465.49086 
+##          ColourK          ColourL        ClarityI2       ClaritySI1 
+##       -818.33910       -837.45941       -608.56655        788.85591 
+##       ClaritySI2       ClaritySI3       ClarityVS1       ClarityVS2 
+##        618.77332        445.77349        896.14503        775.63368 
+##             CutG             CutI             CutV             CutX 
+##         11.87492         39.87405         15.51392         78.05411 
+## CertificationDOW CertificationEGL CertificationGIA          PolishG 
+##       -478.03814       -340.56238        -15.23534        489.84803 
+##          PolishI          PolishV          PolishX        SymmetryG 
+##        533.65413        523.57452        491.24182         72.08555 
+##        SymmetryI        SymmetryV        SymmetryX 
+##               NA         82.01461         59.89269</code></pre>
+</div>
+<div id="answer" class="section level1">
+<h1>Answer</h1>
+<p>The price that the professor found is $3100 for a specific diamond. I looked at the data and added up all of the coefficients to get the price from my calculations. The price that I found equals to 2,844 dollars which is 300 dollars off the original value. If the intercept value was not included than the predicted value would be 3,132 dollars.</p>
+</div>
