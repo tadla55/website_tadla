@@ -1,0 +1,62 @@
+---
+title: 'Logistic Regression '
+author: R package build
+date: '2022-03-28'
+slug: logistic-regression
+categories: []
+tags: []
+---
+```{r}
+library(openintro)
+library(tidyverse)
+library(tidymodels)
+library(ggridges)
+set.seed(1234)
+glimpse(email)
+```
+
+```{r}
+email %>% 
+  group_by(spam) %>%
+  summarise(mean_num_char = mean(num_char))
+```
+```{r}
+email %>% 
+  ggplot(aes(x = num_char, y = spam, fill = spam, color = spam)) + 
+  geom_density_ridges2(alpha = 0.5) + 
+  labs(
+    x = "Number of charecters (in thousnads)",
+    y = "Spam", 
+    title = "Spam vs. number of charecters"
+  ) +
+  guides(color = FALSE, fill = FALSE) +
+  scale_fill_manual(values = c("#E48957", "#CA235F")) +
+  scale_color_manual(values = c("#DEB4A0", "#CA235F"))
+```
+
+```{r}
+email %>% 
+  ggplot(aes(x = re_subj, fill = spam)) + 
+  geom_bar(position = "fill") + 
+  labs(
+    x = 'Whether "re:", "RE:", etc. was in the email subject.',
+    fill = "Spam", 
+    y = NULL,
+    title = 'Spam vs. "re:" in subject'
+  ) +
+  scale_fill_manual(values = c("#DEB4A0", "#CA235F")) 
+```
+
+
+```{r}
+spam_fit <- logistic_reg() %>%
+  set_engine("glm") %>%
+  fit(spam ~ num_char, data = email, family = "binomial")
+tidy(spam_fit)
+```
+
+
+
+
+
+

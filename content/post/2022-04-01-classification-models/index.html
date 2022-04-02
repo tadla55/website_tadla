@@ -1,0 +1,291 @@
+---
+title: Classification Models
+author: R package build
+date: '2022-04-01'
+slug: classification-models
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+library(tidymodels)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────── tidymodels 0.2.0 ──</code></pre>
+<pre><code>## ✓ broom        0.7.12     ✓ rsample      0.1.1 
+## ✓ dials        0.1.0      ✓ tune         0.2.0 
+## ✓ infer        1.0.0      ✓ workflows    0.2.6 
+## ✓ modeldata    0.1.1      ✓ workflowsets 0.2.1 
+## ✓ parsnip      0.2.1      ✓ yardstick    0.0.9 
+## ✓ recipes      0.2.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+## x scales::discard() masks purrr::discard()
+## x dplyr::filter()   masks stats::filter()
+## x recipes::fixed()  masks stringr::fixed()
+## x dplyr::lag()      masks stats::lag()
+## x yardstick::spec() masks readr::spec()
+## x recipes::step()   masks stats::step()
+## • Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+<pre class="r"><code>library(ggridges)</code></pre>
+<pre class="r"><code>gender_submission &lt;- read_csv(&quot;data/gender_submission.csv&quot;)</code></pre>
+<pre><code>## Rows: 418 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl (2): PassengerId, Survived
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>test &lt;- read_csv(&quot;data/test.csv&quot;)</code></pre>
+<pre><code>## Rows: 418 Columns: 11
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (5): Name, Sex, Ticket, Cabin, Embarked
+## dbl (6): PassengerId, Pclass, Age, SibSp, Parch, Fare
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>train &lt;- read_csv(&quot;data/train.csv&quot;)</code></pre>
+<pre><code>## Rows: 891 Columns: 12
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (5): Name, Sex, Ticket, Cabin, Embarked
+## dbl (7): PassengerId, Survived, Pclass, Age, SibSp, Parch, Fare
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>test1 &lt;- cbind(test, Survived = gender_submission$Survived)</code></pre>
+<pre class="r"><code>colSums(is.na(train))</code></pre>
+<pre><code>## PassengerId    Survived      Pclass        Name         Sex         Age 
+##           0           0           0           0           0         177 
+##       SibSp       Parch      Ticket        Fare       Cabin    Embarked 
+##           0           0           0           0         687           2</code></pre>
+<pre class="r"><code>train_clean &lt;- train %&gt;%
+    mutate(Age = if_else(is.na(Age), mean(Age, na.rm = TRUE), Age))
+
+colSums(is.na(train_clean))</code></pre>
+<pre><code>## PassengerId    Survived      Pclass        Name         Sex         Age 
+##           0           0           0           0           0           0 
+##       SibSp       Parch      Ticket        Fare       Cabin    Embarked 
+##           0           0           0           0         687           2</code></pre>
+<pre class="r"><code>colSums(is.na(test1))</code></pre>
+<pre><code>## PassengerId      Pclass        Name         Sex         Age       SibSp 
+##           0           0           0           0          86           0 
+##       Parch      Ticket        Fare       Cabin    Embarked    Survived 
+##           0           0           1         327           0           0</code></pre>
+<pre class="r"><code>test_clean &lt;- test1 %&gt;% 
+    na.omit()</code></pre>
+<pre class="r"><code>data_train &lt;- train_clean %&gt;% 
+        select(-c(PassengerId, Name, Ticket, Embarked, Cabin)) %&gt;% 
+        mutate(Survived = as.factor(Survived),
+           Pclass = as.factor(Pclass),
+           Sex = as.factor(Sex),
+           SibSp = as.factor(SibSp),
+           Parch = as.factor(Parch))</code></pre>
+<pre class="r"><code>str(data_train)</code></pre>
+<pre><code>## tibble [891 × 7] (S3: tbl_df/tbl/data.frame)
+##  $ Survived: Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 1 2 2 2 1 1 1 1 2 2 ...
+##  $ Pclass  : Factor w/ 3 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;: 3 1 3 1 3 3 1 3 3 2 ...
+##  $ Sex     : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 2 1 1 1 2 2 2 2 1 1 ...
+##  $ Age     : num [1:891] 22 38 26 35 35 ...
+##  $ SibSp   : Factor w/ 7 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 2 2 1 2 1 1 1 4 1 2 ...
+##  $ Parch   : Factor w/ 7 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 1 1 1 1 1 1 1 2 3 1 ...
+##  $ Fare    : num [1:891] 7.25 71.28 7.92 53.1 8.05 ...</code></pre>
+<pre class="r"><code>prop.table(table(data_train$Survived))</code></pre>
+<pre><code>## 
+##         0         1 
+## 0.6161616 0.3838384</code></pre>
+<pre class="r"><code>train$Pclass &lt;- as.factor(train$Pclass)
+train$Survived &lt;- as.factor(train$Survived)
+train$Sex &lt;- as.factor(train$Sex)
+train$Embarked &lt;- as.factor(train$Embarked)</code></pre>
+<pre class="r"><code>logistic.train &lt;- glm(Survived~., data_train, family = &quot;binomial&quot;) 
+summary(logistic.train)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Survived ~ ., family = &quot;binomial&quot;, data = data_train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.8306  -0.6225  -0.4347   0.6019   2.4601  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.510e+00  4.662e-01   7.531 5.05e-14 ***
+## Pclass2     -1.057e+00  2.987e-01  -3.539 0.000402 ***
+## Pclass3     -2.016e+00  2.946e-01  -6.841 7.86e-12 ***
+## Sexmale     -2.719e+00  2.007e-01 -13.544  &lt; 2e-16 ***
+## Age         -3.639e-02  8.343e-03  -4.362 1.29e-05 ***
+## SibSp1       8.279e-02  2.239e-01   0.370 0.711570    
+## SibSp2      -2.858e-01  5.342e-01  -0.535 0.592645    
+## SibSp3      -2.353e+00  7.175e-01  -3.280 0.001040 ** 
+## SibSp4      -1.773e+00  7.687e-01  -2.306 0.021108 *  
+## SibSp5      -1.611e+01  9.549e+02  -0.017 0.986541    
+## SibSp8      -1.609e+01  7.542e+02  -0.021 0.982984    
+## Parch1       3.808e-01  2.891e-01   1.317 0.187769    
+## Parch2       4.165e-02  3.789e-01   0.110 0.912462    
+## Parch3       2.485e-01  1.040e+00   0.239 0.811241    
+## Parch4      -1.609e+01  1.053e+03  -0.015 0.987805    
+## Parch5      -1.329e+00  1.168e+00  -1.138 0.255228    
+## Parch6      -1.671e+01  2.400e+03  -0.007 0.994444    
+## Fare         2.810e-03  2.483e-03   1.132 0.257803    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1186.66  on 890  degrees of freedom
+## Residual deviance:  768.71  on 873  degrees of freedom
+## AIC: 804.71
+## 
+## Number of Fisher Scoring iterations: 15</code></pre>
+<div id="survavial-rate-of-passangers" class="section level1">
+<h1>Survavial rate of passangers</h1>
+<pre class="r"><code>ggplot(train, aes(x = Survived, fill = Survived)) + 
+  geom_bar() + 
+  labs(y = &quot;Passenger Count&quot;,
+       title = &quot;Survival Rates&quot;) </code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>prop.table(table(train$Survived))</code></pre>
+<pre><code>## 
+##         0         1 
+## 0.6161616 0.3838384</code></pre>
+</div>
+<div id="survival-rate-by-sex" class="section level1">
+<h1>Survival rate by Sex</h1>
+<pre class="r"><code>ggplot(data_train, aes(x = Sex, fill = Survived)) + 
+  theme_bw() +
+  geom_bar() +
+  labs(y = &quot;Passenger Count&quot;,
+       title = &quot;Survival Rates by Sex&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="survival-rate-by-ticket-class" class="section level1">
+<h1>Survival rate by ticket class</h1>
+<pre class="r"><code>ggplot(train, aes(x = Pclass, fill = Survived)) + 
+  theme_bw() +
+  geom_bar() +
+  labs(y = &quot;Passenger Count&quot;,
+       title = &quot;Titanic Survival Rates by Ticket Class&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+# Survival rate of sex and ticket class</p>
+<pre class="r"><code>ggplot(train, aes(x = Sex, fill = Survived)) + 
+  theme_bw() +
+  facet_wrap(~ Pclass) +
+  geom_bar() +
+  labs(y = &quot;Passenger Count&quot;,
+       title = &quot;Titanic Survival Rates by Sex and Ticket Class&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+<div id="data-of-age-of-passangers" class="section level1">
+<h1>Data of age of passangers</h1>
+<pre class="r"><code>ggplot(train, aes(x = Age, fill = Survived)) +
+  theme_bw() +
+  geom_histogram(binwidth = 5) +
+  labs(y = &quot;Passenger Count&quot;,
+       x = &quot;Age&quot;,
+       title = &quot;Passanger Age Survival Rate&quot;)</code></pre>
+<pre><code>## Warning: Removed 177 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="survival-rates-by-sex-ticket-and-age" class="section level1">
+<h1>Survival rates by sex, ticket and age</h1>
+<pre class="r"><code>ggplot(train, aes(x = Age, fill = Survived)) +
+  theme_bw() +
+  facet_wrap(Sex ~ Pclass) +
+  geom_density(alpha = 0.7) +
+  labs(y = &quot;Percent of Passangers&quot;,
+       x = &quot;Age&quot;,
+       title = &quot;Titanic Survival Rates by Sex, Ticket and Age&quot;)</code></pre>
+<pre><code>## Warning: Removed 177 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>logistic.model &lt;- glm(formula = Survived ~ Age + Pclass + Sex, family = &quot;binomial&quot;, data = train)
+summary(logistic.model)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Survived ~ Age + Pclass + Sex, family = &quot;binomial&quot;, 
+##     data = train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.7303  -0.6780  -0.3953   0.6485   2.4657  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.777013   0.401123   9.416  &lt; 2e-16 ***
+## Age         -0.036985   0.007656  -4.831 1.36e-06 ***
+## Pclass2     -1.309799   0.278066  -4.710 2.47e-06 ***
+## Pclass3     -2.580625   0.281442  -9.169  &lt; 2e-16 ***
+## Sexmale     -2.522781   0.207391 -12.164  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 964.52  on 713  degrees of freedom
+## Residual deviance: 647.28  on 709  degrees of freedom
+##   (177 observations deleted due to missingness)
+## AIC: 657.28
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>logistic.train &lt;- glm(Survived~., data_train, family = &quot;binomial&quot;) 
+summary(logistic.train)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Survived ~ ., family = &quot;binomial&quot;, data = data_train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.8306  -0.6225  -0.4347   0.6019   2.4601  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.510e+00  4.662e-01   7.531 5.05e-14 ***
+## Pclass2     -1.057e+00  2.987e-01  -3.539 0.000402 ***
+## Pclass3     -2.016e+00  2.946e-01  -6.841 7.86e-12 ***
+## Sexmale     -2.719e+00  2.007e-01 -13.544  &lt; 2e-16 ***
+## Age         -3.639e-02  8.343e-03  -4.362 1.29e-05 ***
+## SibSp1       8.279e-02  2.239e-01   0.370 0.711570    
+## SibSp2      -2.858e-01  5.342e-01  -0.535 0.592645    
+## SibSp3      -2.353e+00  7.175e-01  -3.280 0.001040 ** 
+## SibSp4      -1.773e+00  7.687e-01  -2.306 0.021108 *  
+## SibSp5      -1.611e+01  9.549e+02  -0.017 0.986541    
+## SibSp8      -1.609e+01  7.542e+02  -0.021 0.982984    
+## Parch1       3.808e-01  2.891e-01   1.317 0.187769    
+## Parch2       4.165e-02  3.789e-01   0.110 0.912462    
+## Parch3       2.485e-01  1.040e+00   0.239 0.811241    
+## Parch4      -1.609e+01  1.053e+03  -0.015 0.987805    
+## Parch5      -1.329e+00  1.168e+00  -1.138 0.255228    
+## Parch6      -1.671e+01  2.400e+03  -0.007 0.994444    
+## Fare         2.810e-03  2.483e-03   1.132 0.257803    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1186.66  on 890  degrees of freedom
+## Residual deviance:  768.71  on 873  degrees of freedom
+## AIC: 804.71
+## 
+## Number of Fisher Scoring iterations: 15</code></pre>
+<pre class="r"><code>Predicted_data &lt;- data.frame(Age=seq(
+  min(data_train$Age), max(data_train$Age),len=500))</code></pre>
+<pre class="r"><code>ggplot(data_train, aes(x=Age, y=Survived)) + geom_point() +
+      stat_smooth(method=&quot;glm&quot;, color=&quot;blue&quot;, se=FALSE,
+                method.args = list(family=binomial))</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
+<pre><code>## Warning: Computation failed in `stat_smooth()`:
+## y values must be 0 &lt;= y &lt;= 1</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
