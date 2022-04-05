@@ -40,6 +40,99 @@ dfw <- df %>%
 
 max(dfw$Carat)
 ```
+# Data 
+
+```{r}
+qplot(df$Price, geom="histogram",fill = "Orange", xlab = "Price", main = "Price of diamond", ylab = "Frequency") 
+```
+
+```{r}
+qplot(df$Carat, geom="histogram",fill = "Orange", xlab = "Carat", main = "Carat", ylab = "Frequency") 
+```
+
+# Data Tables
+Clarity
+```{r}
+table(df$Clarity)
+```
+
+Color
+```{r}
+table(df$Colour)
+```
+
+Cut
+```{r}
+table(df$Cut)
+```
+
+Certification
+```{r}
+table(df$Certification)
+```
+
+Polish
+```{r}
+table(df$Polish)
+```
+
+Symmetry
+```{r}
+table(df$Symmetry)
+```
+
+# ANOVA
+
+Carat
+```{r}
+one.way <- aov(Price ~ Carat, data = df)
+
+summary(one.way)
+```
+
+Clarity
+```{r}
+one.way <- aov(Price ~ Clarity, data = df)
+
+summary(one.way)
+```
+
+Certification
+```{r}
+one.way <- aov(Price ~ Certification, data = df)
+
+summary(one.way)
+```
+
+Cut
+```{r}
+one.way <- aov(Price ~ Cut, data = df)
+
+summary(one.way)
+```
+
+Polish
+```{r}
+one.way <- aov(Price ~ Polish, data = df)
+
+summary(one.way)
+```
+
+Symmetry
+```{r}
+one.way <- aov(Price ~ Symmetry, data = df)
+
+summary(one.way)
+```
+
+Color
+```{r}
+one.way <- aov(Price ~ Colour, data = df)
+
+summary(one.way)
+```
+
+
 # Graph
 ```{r}
 df %>%

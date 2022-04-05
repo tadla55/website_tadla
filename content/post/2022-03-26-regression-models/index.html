@@ -53,12 +53,120 @@ dfw &lt;- df %&gt;%
 max(dfw$Carat)</code></pre>
 <pre><code>## [1] 0.3</code></pre>
 </div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<pre class="r"><code>qplot(df$Price, geom=&quot;histogram&quot;,fill = &quot;Orange&quot;, xlab = &quot;Price&quot;, main = &quot;Price of diamond&quot;, ylab = &quot;Frequency&quot;) </code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>qplot(df$Carat, geom=&quot;histogram&quot;,fill = &quot;Orange&quot;, xlab = &quot;Carat&quot;, main = &quot;Carat&quot;, ylab = &quot;Frequency&quot;) </code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="data-tables" class="section level1">
+<h1>Data Tables</h1>
+<p>Clarity</p>
+<pre class="r"><code>table(df$Clarity)</code></pre>
+<pre><code>## 
+##   I1   I2  SI1  SI2  SI3  VS1  VS2 VVS1 VVS2 
+##   82   28  116  110   26   30   41    2    5</code></pre>
+<p>Color</p>
+<pre class="r"><code>table(df$Colour)</code></pre>
+<pre><code>## 
+##  D  E  F  G  H  I  J  K  L 
+## 20 54 58 43 71 79 72 31 12</code></pre>
+<p>Cut</p>
+<pre class="r"><code>table(df$Cut)</code></pre>
+<pre><code>## 
+##   F   G   I   V   X 
+##  59  49  86  97 149</code></pre>
+<p>Certification</p>
+<pre class="r"><code>table(df$Certification)</code></pre>
+<pre><code>## 
+## AGS DOW EGL GIA IGI 
+##  12   1 119 265  43</code></pre>
+<p>Polish</p>
+<pre class="r"><code>table(df$Polish)</code></pre>
+<pre><code>## 
+##   F   G   I   v   V   X 
+##   5 165   5   1 203  61</code></pre>
+<p>Symmetry</p>
+<pre class="r"><code>table(df$Symmetry)</code></pre>
+<pre><code>## 
+##   F   G   I   V   X 
+##  21 157   5 206  51</code></pre>
+</div>
+<div id="anova" class="section level1">
+<h1>ANOVA</h1>
+<p>Carat</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Carat, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq   Mean Sq F value Pr(&gt;F)    
+## Carat         1 519687583 519687583    2613 &lt;2e-16 ***
+## Residuals   438  87117938    198899                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Clarity</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Clarity, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq  Mean Sq F value Pr(&gt;F)    
+## Clarity       8 194938677 24367335    25.5 &lt;2e-16 ***
+## Residuals   431 411866844   955608                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Certification</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Certification, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##                Df    Sum Sq  Mean Sq F value Pr(&gt;F)    
+## Certification   4 238869617 59717404    70.6 &lt;2e-16 ***
+## Residuals     435 367935903   845830                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Cut</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Cut, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq  Mean Sq F value   Pr(&gt;F)    
+## Cut           4  66164570 16541142   13.31 3.07e-10 ***
+## Residuals   435 540640951  1242853                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Polish</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Polish, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq Mean Sq F value   Pr(&gt;F)    
+## Polish        5  28574143 5714829   4.289 0.000808 ***
+## Residuals   434 578231378 1332330                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Symmetry</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Symmetry, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq Mean Sq F value   Pr(&gt;F)    
+## Symmetry      4  37655698 9413925   7.195 1.29e-05 ***
+## Residuals   435 569149823 1308390                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Color</p>
+<pre class="r"><code>one.way &lt;- aov(Price ~ Colour, data = df)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df    Sum Sq Mean Sq F value   Pr(&gt;F)    
+## Colour        8  51620143 6452518   5.009 5.87e-06 ***
+## Residuals   431 555185378 1288133                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
 <div id="graph" class="section level1">
 <h1>Graph</h1>
 <pre class="r"><code>df %&gt;%
     ggplot(aes(x=Carat, y = Price, color = Wholesaler)) +
         geom_point()      </code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre class="r"><code>dfw23 &lt;- df %&gt;%
   filter(Wholesaler == 2 | Wholesaler == 1)
 
@@ -68,7 +176,7 @@ dim(dfw23)</code></pre>
   ggplot(aes(x = Carat, y = Price, color = Wholesaler 
     )) +
   geom_point()</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <pre class="r"><code>attach(dfw23)</code></pre>
 </div>
 <div id="boot-function" class="section level1">
