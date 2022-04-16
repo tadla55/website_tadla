@@ -1,0 +1,174 @@
+---
+title: Ethics and Privacy
+author: R package build
+date: '2022-04-11'
+slug: ethics-and-privacy
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="data-visualization" class="section level1">
+<h1>Data Visualization</h1>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(png)
+library(grid)
+library(ggplot2)</code></pre>
+<p>data frame of masked</p>
+<pre class="r"><code>df &lt;- tribble(
+  ~date, ~count,
+  &quot;7/12/2020&quot;, 25.2,
+  &quot;7/13/2020&quot;, 19.8,
+  &quot;7/14/2020&quot;, 19.8,
+  &quot;7/15/2020&quot;, 20.5,
+  &quot;7/16/2020&quot;, 19.8,
+  &quot;7/17/2020&quot;, 19.8, 
+  &quot;7/18/2020&quot;, 20.4,
+  &quot;7/19/2020&quot;, 19.8,
+  &quot;7/20/2020&quot;, 20.3, 
+  &quot;7/21/2020&quot;, 21.2,
+  &quot;7/22/2020&quot;, 19.8,
+  &quot;7/23/2020&quot;, 19.8, 
+  &quot;7/24/2020&quot;, 20.5,
+  &quot;7/25/2020&quot;, 19,
+  &quot;7/26/2020&quot;, 19.6, 
+  &quot;7/27/2020&quot;, 17,
+  &quot;7/28/2020&quot;, 16.6,
+  &quot;7/29/2020&quot;, 16.6,
+  &quot;7/30/2020&quot;, 16.7,
+  &quot;7/31/2020&quot;, 15.9,
+  &quot;8/1/2020&quot;, 16, 
+  &quot;8/2/2020&quot;, 15.9,
+  &quot;8/3/2020&quot;, 16,
+  
+)
+df</code></pre>
+<pre><code>## # A tibble: 23 × 2
+##    date      count
+##    &lt;chr&gt;     &lt;dbl&gt;
+##  1 7/12/2020  25.2
+##  2 7/13/2020  19.8
+##  3 7/14/2020  19.8
+##  4 7/15/2020  20.5
+##  5 7/16/2020  19.8
+##  6 7/17/2020  19.8
+##  7 7/18/2020  20.4
+##  8 7/19/2020  19.8
+##  9 7/20/2020  20.3
+## 10 7/21/2020  21.2
+## # … with 13 more rows</code></pre>
+<p>data frame of no mask</p>
+<pre class="r"><code>df2 &lt;- tribble(
+  ~date, ~count,
+  &quot;7/12/2020&quot;, 20.9,
+  &quot;7/13/2020&quot;, 20,
+  &quot;7/14/2020&quot;, 20.2,
+  &quot;7/15/2020&quot;, 20.9,
+  &quot;7/16/2020&quot;, 20.9,
+  &quot;7/17/2020&quot;, 20.4, 
+  &quot;7/18/2020&quot;, 20.4,
+  &quot;7/19/2020&quot;, 19.9,
+  &quot;7/20/2020&quot;, 19.6, 
+  &quot;7/21/2020&quot;, 19.6,
+  &quot;7/22/2020&quot;, 19.7,
+  &quot;7/23/2020&quot;, 19.5, 
+  &quot;7/24/2020&quot;, 20.8,
+  &quot;7/25/2020&quot;, 20.9,
+  &quot;7/26/2020&quot;, 21, 
+  &quot;7/27/2020&quot;, 20.5,
+  &quot;7/28/2020&quot;, 20.5,
+  &quot;7/29/2020&quot;, 20.5,
+  &quot;7/30/2020&quot;, 21,
+  &quot;7/31/2020&quot;, 20.9,
+  &quot;8/1/2020&quot;, 20, 
+  &quot;8/2/2020&quot;, 19.9,
+  &quot;8/3/2020&quot;, 20.2,
+  
+)
+df2</code></pre>
+<pre><code>## # A tibble: 23 × 2
+##    date      count
+##    &lt;chr&gt;     &lt;dbl&gt;
+##  1 7/12/2020  20.9
+##  2 7/13/2020  20  
+##  3 7/14/2020  20.2
+##  4 7/15/2020  20.9
+##  5 7/16/2020  20.9
+##  6 7/17/2020  20.4
+##  7 7/18/2020  20.4
+##  8 7/19/2020  19.9
+##  9 7/20/2020  19.6
+## 10 7/21/2020  19.6
+## # … with 13 more rows</code></pre>
+<pre class="r"><code>df3 &lt;- df %&gt;%  mutate(Type = &#39;Mask&#39;) %&gt;%
+       bind_rows(df2 %&gt;%
+           mutate(Type = &#39;No Mask&#39;))</code></pre>
+<pre class="r"><code>df3</code></pre>
+<pre><code>## # A tibble: 46 × 3
+##    date      count Type 
+##    &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;
+##  1 7/12/2020  25.2 Mask 
+##  2 7/13/2020  19.8 Mask 
+##  3 7/14/2020  19.8 Mask 
+##  4 7/15/2020  20.5 Mask 
+##  5 7/16/2020  19.8 Mask 
+##  6 7/17/2020  19.8 Mask 
+##  7 7/18/2020  20.4 Mask 
+##  8 7/19/2020  19.8 Mask 
+##  9 7/20/2020  20.3 Mask 
+## 10 7/21/2020  21.2 Mask 
+## # … with 36 more rows</code></pre>
+<pre class="r"><code>Strdate &lt;- c(
+  &quot;7/13/2020&quot;, 
+  &quot;7/14/2020&quot;, 
+  &quot;7/15/2020&quot;, 
+  &quot;7/16/2020&quot;, 
+  &quot;7/17/2020&quot;,  
+  &quot;7/18/2020&quot;, 
+  &quot;7/19/2020&quot;,
+  &quot;7/20/2020&quot;,  
+  &quot;7/21/2020&quot;, 
+  &quot;7/22/2020&quot;, 
+  &quot;7/23/2020&quot;,  
+  &quot;7/24/2020&quot;, 
+  &quot;7/25/2020&quot;, 
+  &quot;7/26/2020&quot;,  
+  &quot;7/27/2020&quot;, 
+  &quot;7/28/2020&quot;, 
+  &quot;7/29/2020&quot;, 
+  &quot;7/30/2020&quot;, 
+  &quot;7/31/2020&quot;, 
+  &quot;8/1/2020&quot;,  
+  &quot;8/2/2020&quot;,
+  &quot;8/3/2020&quot;)
+
+mydate2 &lt;- as.Date(&quot;7/14/2020&quot;, &quot;%m/%d/%Y&quot;)
+mydate &lt;- as.Date(&quot;7/13/2020&quot;, &quot;%m/%d/%Y&quot;)</code></pre>
+<pre class="r"><code>ggplot(df3, aes(y = count,x = mydate,color = Type)) + 
+  geom_line() +
+  ggtitle(&quot;Mask Counties vs. No-Mask Counties&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two difrrent data lines.</p>
+<p>Counties that wear masks have dropped lower than the non mask counties in covid cases by the end of the month but at the begging non mask counties were lower than mask counties.</p>
+</div>
+<div id="data-viz-review" class="section level1">
+<h1>Data Viz Review</h1>
+<p>The video talks about changing the people perspective and how they tricked their boss. He talks about the way to change politics and to change the politics you have to change the culture because politics follows the culture. To change the culture, you have to change the people because they make the culture. To change the people a person has to convince them and that is where data targeting takes place. The company took data from Facebook to create a social profile of people and the persons friends. The data can be used to create different algorithms to target specific people. This is not ethical since people claimed private data without thousands of people knowing their data was being used for this project. Today I can see online ads that are to my taste and think that the algorithms are still used today but on a bigger scale. Everybody today uses some type of electronic product, and it stores millions and billions of different types of data. This data can be used to create many algorithms to do a specific job like making a person buy an item or having their ideas changed to fit the views of other people.</p>
+</div>
+<div id="data-camp-certificate" class="section level1">
+<h1>Data Camp Certificate</h1>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/tadla55/website_tadla/master/Data%20Privacy.png" alt="" />
+<p class="caption">Certificate</p>
+</div>
+</div>

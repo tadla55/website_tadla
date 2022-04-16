@@ -1,0 +1,147 @@
+---
+title: Ethics and Privacy
+author: R package build
+date: '2022-04-11'
+slug: ethics-and-privacy
+categories: []
+tags: []
+---
+
+# Data Visualization 
+```{r}
+library(tidyverse)
+library(png)
+library(grid)
+library(ggplot2)
+```
+
+data frame of masked
+```{r}
+df <- tribble(
+  ~date, ~count,
+  "7/12/2020", 25.2,
+  "7/13/2020", 19.8,
+  "7/14/2020", 19.8,
+  "7/15/2020", 20.5,
+  "7/16/2020", 19.8,
+  "7/17/2020", 19.8, 
+  "7/18/2020", 20.4,
+  "7/19/2020", 19.8,
+  "7/20/2020", 20.3, 
+  "7/21/2020", 21.2,
+  "7/22/2020", 19.8,
+  "7/23/2020", 19.8, 
+  "7/24/2020", 20.5,
+  "7/25/2020", 19,
+  "7/26/2020", 19.6, 
+  "7/27/2020", 17,
+  "7/28/2020", 16.6,
+  "7/29/2020", 16.6,
+  "7/30/2020", 16.7,
+  "7/31/2020", 15.9,
+  "8/1/2020", 16, 
+  "8/2/2020", 15.9,
+  "8/3/2020", 16,
+  
+)
+df
+```
+
+data frame of no mask 
+```{r}
+df2 <- tribble(
+  ~date, ~count,
+  "7/12/2020", 20.9,
+  "7/13/2020", 20,
+  "7/14/2020", 20.2,
+  "7/15/2020", 20.9,
+  "7/16/2020", 20.9,
+  "7/17/2020", 20.4, 
+  "7/18/2020", 20.4,
+  "7/19/2020", 19.9,
+  "7/20/2020", 19.6, 
+  "7/21/2020", 19.6,
+  "7/22/2020", 19.7,
+  "7/23/2020", 19.5, 
+  "7/24/2020", 20.8,
+  "7/25/2020", 20.9,
+  "7/26/2020", 21, 
+  "7/27/2020", 20.5,
+  "7/28/2020", 20.5,
+  "7/29/2020", 20.5,
+  "7/30/2020", 21,
+  "7/31/2020", 20.9,
+  "8/1/2020", 20, 
+  "8/2/2020", 19.9,
+  "8/3/2020", 20.2,
+  
+)
+df2
+```
+
+```{r}
+df3 <- df %>%  mutate(Type = 'Mask') %>%
+       bind_rows(df2 %>%
+           mutate(Type = 'No Mask'))
+```
+
+```{r}
+df3
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+Strdate <- c(
+  "7/13/2020", 
+  "7/14/2020", 
+  "7/15/2020", 
+  "7/16/2020", 
+  "7/17/2020",  
+  "7/18/2020", 
+  "7/19/2020",
+  "7/20/2020",  
+  "7/21/2020", 
+  "7/22/2020", 
+  "7/23/2020",  
+  "7/24/2020", 
+  "7/25/2020", 
+  "7/26/2020",  
+  "7/27/2020", 
+  "7/28/2020", 
+  "7/29/2020", 
+  "7/30/2020", 
+  "7/31/2020", 
+  "8/1/2020",  
+  "8/2/2020",
+  "8/3/2020")
+
+mydate2 <- as.Date("7/14/2020", "%m/%d/%Y")
+mydate <- as.Date("7/13/2020", "%m/%d/%Y")
+```
+
+```{r}
+ggplot(df3, aes(y = count,x = mydate,color = Type)) + 
+  geom_line() +
+  ggtitle("Mask Counties vs. No-Mask Counties")
+```
+
+
+The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two difrrent data lines. 
+
+Counties that wear masks have dropped lower than the non mask counties in covid cases by the end of the month but at the begging non mask counties were lower than mask counties. 
+
+# Data Viz Review
+
+The video talks about changing the people perspective and how they tricked their boss. He talks about the way to change politics and to change the politics you have to change the culture because politics follows the culture. To change the culture, you have to change the people because they make the culture. To change the people a person has to convince them and that is where data targeting takes place. The company took data from Facebook to create a social profile of people and the persons friends. The data can be used to create different algorithms to target specific people. This is not ethical since people claimed private data without thousands of people knowing their data was being used for this project.  Today I can see online ads that are to my taste and think that the algorithms are still used today but on a bigger scale. Everybody today uses some type of electronic product, and it stores millions and billions of different types of data. This data can be used to create many algorithms to do a specific job like making a person buy an item or having their ideas changed to fit the views of other people. 
+
+# Data Camp Certificate 
+
+![Certificate](https://raw.githubusercontent.com/tadla55/website_tadla/master/Data%20Privacy.png)
+
+
+
