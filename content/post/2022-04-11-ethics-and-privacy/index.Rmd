@@ -13,6 +13,8 @@ library(tidyverse)
 library(png)
 library(grid)
 library(ggplot2)
+library(dplyr)
+library(chron)
 ```
 
 data frame of masked
@@ -90,13 +92,10 @@ df3
 ```
 
 
-```{r}
-
-```
 
 
 ```{r}
-Strdate <- c(
+mdate <- c(
   "7/13/2020", 
   "7/14/2020", 
   "7/15/2020", 
@@ -120,12 +119,26 @@ Strdate <- c(
   "8/2/2020",
   "8/3/2020")
 
-mydate2 <- as.Date("7/14/2020", "%m/%d/%Y")
-mydate <- as.Date("7/13/2020", "%m/%d/%Y")
+mdf <- data.frame(mdate)
 ```
 
 ```{r}
-ggplot(df3, aes(y = count,x = mydate,color = Type)) + 
+df3 <- df %>%  mutate(Type = 'Mask') %>%
+       bind_rows(df2 %>%
+           mutate(Type = 'No Mask'))
+```
+
+
+```{r}
+df4 <- 
+mutate(df3, date= as.Date(date, format= "%m/%d/%Y"))
+df4
+```
+
+
+
+```{r}
+ggplot(df4, aes(y = count,x = date,color = Type)) + 
   geom_line() +
   ggtitle("Mask Counties vs. No-Mask Counties")
 ```

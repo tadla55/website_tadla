@@ -23,7 +23,9 @@ tags: []
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(png)
 library(grid)
-library(ggplot2)</code></pre>
+library(ggplot2)
+library(dplyr)
+library(chron)</code></pre>
 <p>data frame of masked</p>
 <pre class="r"><code>df &lt;- tribble(
   ~date, ~count,
@@ -128,7 +130,7 @@ df2</code></pre>
 ##  9 7/20/2020  20.3 Mask 
 ## 10 7/21/2020  21.2 Mask 
 ## # … with 36 more rows</code></pre>
-<pre class="r"><code>Strdate &lt;- c(
+<pre class="r"><code>mdate &lt;- c(
   &quot;7/13/2020&quot;, 
   &quot;7/14/2020&quot;, 
   &quot;7/15/2020&quot;, 
@@ -152,12 +154,31 @@ df2</code></pre>
   &quot;8/2/2020&quot;,
   &quot;8/3/2020&quot;)
 
-mydate2 &lt;- as.Date(&quot;7/14/2020&quot;, &quot;%m/%d/%Y&quot;)
-mydate &lt;- as.Date(&quot;7/13/2020&quot;, &quot;%m/%d/%Y&quot;)</code></pre>
-<pre class="r"><code>ggplot(df3, aes(y = count,x = mydate,color = Type)) + 
+mdf &lt;- data.frame(mdate)</code></pre>
+<pre class="r"><code>df3 &lt;- df %&gt;%  mutate(Type = &#39;Mask&#39;) %&gt;%
+       bind_rows(df2 %&gt;%
+           mutate(Type = &#39;No Mask&#39;))</code></pre>
+<pre class="r"><code>df4 &lt;- 
+mutate(df3, date= as.Date(date, format= &quot;%m/%d/%Y&quot;))
+df4</code></pre>
+<pre><code>## # A tibble: 46 × 3
+##    date       count Type 
+##    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt;
+##  1 2020-07-12  25.2 Mask 
+##  2 2020-07-13  19.8 Mask 
+##  3 2020-07-14  19.8 Mask 
+##  4 2020-07-15  20.5 Mask 
+##  5 2020-07-16  19.8 Mask 
+##  6 2020-07-17  19.8 Mask 
+##  7 2020-07-18  20.4 Mask 
+##  8 2020-07-19  19.8 Mask 
+##  9 2020-07-20  20.3 Mask 
+## 10 2020-07-21  21.2 Mask 
+## # … with 36 more rows</code></pre>
+<pre class="r"><code>ggplot(df4, aes(y = count,x = date,color = Type)) + 
   geom_line() +
   ggtitle(&quot;Mask Counties vs. No-Mask Counties&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two difrrent data lines.</p>
 <p>Counties that wear masks have dropped lower than the non mask counties in covid cases by the end of the month but at the begging non mask counties were lower than mask counties.</p>
 </div>
