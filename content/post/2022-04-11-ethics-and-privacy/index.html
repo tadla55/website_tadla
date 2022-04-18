@@ -72,45 +72,45 @@ df</code></pre>
 <p>data frame of no mask</p>
 <pre class="r"><code>df2 &lt;- tribble(
   ~date, ~count,
-  &quot;7/12/2020&quot;, 20.9,
-  &quot;7/13/2020&quot;, 20,
-  &quot;7/14/2020&quot;, 20.2,
-  &quot;7/15/2020&quot;, 20.9,
-  &quot;7/16/2020&quot;, 20.9,
-  &quot;7/17/2020&quot;, 20.4, 
-  &quot;7/18/2020&quot;, 20.4,
-  &quot;7/19/2020&quot;, 19.9,
-  &quot;7/20/2020&quot;, 19.6, 
-  &quot;7/21/2020&quot;, 19.6,
-  &quot;7/22/2020&quot;, 19.7,
-  &quot;7/23/2020&quot;, 19.5, 
-  &quot;7/24/2020&quot;, 20.8,
-  &quot;7/25/2020&quot;, 20.9,
-  &quot;7/26/2020&quot;, 21, 
-  &quot;7/27/2020&quot;, 20.5,
-  &quot;7/28/2020&quot;, 20.5,
-  &quot;7/29/2020&quot;, 20.5,
-  &quot;7/30/2020&quot;, 21,
-  &quot;7/31/2020&quot;, 20.9,
-  &quot;8/1/2020&quot;, 20, 
-  &quot;8/2/2020&quot;, 19.9,
-  &quot;8/3/2020&quot;, 20.2,
+  &quot;7/12/2020&quot;, 9.9,
+  &quot;7/13/2020&quot;, 9.1,
+  &quot;7/14/2020&quot;, 9.4,
+  &quot;7/15/2020&quot;, 9.9,
+  &quot;7/16/2020&quot;, 9.9,
+  &quot;7/17/2020&quot;, 9.4, 
+  &quot;7/18/2020&quot;, 9.4,
+  &quot;7/19/2020&quot;, 8.9,
+  &quot;7/20/2020&quot;, 8.6, 
+  &quot;7/21/2020&quot;, 8.6,
+  &quot;7/22/2020&quot;, 8.7,
+  &quot;7/23/2020&quot;, 8.5, 
+  &quot;7/24/2020&quot;, 9.8,
+  &quot;7/25/2020&quot;, 9.9,
+  &quot;7/26/2020&quot;, 10, 
+  &quot;7/27/2020&quot;, 9.5,
+  &quot;7/28/2020&quot;, 9.5,
+  &quot;7/29/2020&quot;, 9.5,
+  &quot;7/30/2020&quot;, 10,
+  &quot;7/31/2020&quot;, 9,
+  &quot;8/1/2020&quot;, 9.1, 
+  &quot;8/2/2020&quot;, 8.9,
+  &quot;8/3/2020&quot;, 9.2,
   
 )
 df2</code></pre>
 <pre><code>## # A tibble: 23 × 2
 ##    date      count
 ##    &lt;chr&gt;     &lt;dbl&gt;
-##  1 7/12/2020  20.9
-##  2 7/13/2020  20  
-##  3 7/14/2020  20.2
-##  4 7/15/2020  20.9
-##  5 7/16/2020  20.9
-##  6 7/17/2020  20.4
-##  7 7/18/2020  20.4
-##  8 7/19/2020  19.9
-##  9 7/20/2020  19.6
-## 10 7/21/2020  19.6
+##  1 7/12/2020   9.9
+##  2 7/13/2020   9.1
+##  3 7/14/2020   9.4
+##  4 7/15/2020   9.9
+##  5 7/16/2020   9.9
+##  6 7/17/2020   9.4
+##  7 7/18/2020   9.4
+##  8 7/19/2020   8.9
+##  9 7/20/2020   8.6
+## 10 7/21/2020   8.6
 ## # … with 13 more rows</code></pre>
 <pre class="r"><code>df3 &lt;- df %&gt;%  mutate(Type = &#39;Mask&#39;) %&gt;%
        bind_rows(df2 %&gt;%
@@ -179,8 +179,8 @@ df4</code></pre>
   geom_line() +
   ggtitle(&quot;Mask Counties vs. No-Mask Counties&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two difrrent data lines.</p>
-<p>Counties that wear masks have dropped lower than the non mask counties in covid cases by the end of the month but at the begging non mask counties were lower than mask counties.</p>
+<p>The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two different data lines.</p>
+<p>Counties that wear masks have dropped lower in covid cases by the end of the month but at the begging non mask counties were lower than mask counties. The non mask had maintained a stable line while the mask droped down in cases.</p>
 </div>
 <div id="data-viz-review" class="section level1">
 <h1>Data Viz Review</h1>

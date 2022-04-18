@@ -53,29 +53,29 @@ data frame of no mask
 ```{r}
 df2 <- tribble(
   ~date, ~count,
-  "7/12/2020", 20.9,
-  "7/13/2020", 20,
-  "7/14/2020", 20.2,
-  "7/15/2020", 20.9,
-  "7/16/2020", 20.9,
-  "7/17/2020", 20.4, 
-  "7/18/2020", 20.4,
-  "7/19/2020", 19.9,
-  "7/20/2020", 19.6, 
-  "7/21/2020", 19.6,
-  "7/22/2020", 19.7,
-  "7/23/2020", 19.5, 
-  "7/24/2020", 20.8,
-  "7/25/2020", 20.9,
-  "7/26/2020", 21, 
-  "7/27/2020", 20.5,
-  "7/28/2020", 20.5,
-  "7/29/2020", 20.5,
-  "7/30/2020", 21,
-  "7/31/2020", 20.9,
-  "8/1/2020", 20, 
-  "8/2/2020", 19.9,
-  "8/3/2020", 20.2,
+  "7/12/2020", 9.9,
+  "7/13/2020", 9.1,
+  "7/14/2020", 9.4,
+  "7/15/2020", 9.9,
+  "7/16/2020", 9.9,
+  "7/17/2020", 9.4, 
+  "7/18/2020", 9.4,
+  "7/19/2020", 8.9,
+  "7/20/2020", 8.6, 
+  "7/21/2020", 8.6,
+  "7/22/2020", 8.7,
+  "7/23/2020", 8.5, 
+  "7/24/2020", 9.8,
+  "7/25/2020", 9.9,
+  "7/26/2020", 10, 
+  "7/27/2020", 9.5,
+  "7/28/2020", 9.5,
+  "7/29/2020", 9.5,
+  "7/30/2020", 10,
+  "7/31/2020", 9,
+  "8/1/2020", 9.1, 
+  "8/2/2020", 8.9,
+  "8/3/2020", 9.2,
   
 )
 df2
@@ -144,9 +144,9 @@ ggplot(df4, aes(y = count,x = date,color = Type)) +
 ```
 
 
-The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two difrrent data lines. 
+The message that is more clear is the comparison of both of the data and they share the same y axis which is easier to read. The color lines are named so its more clear to see the two different data lines. 
 
-Counties that wear masks have dropped lower than the non mask counties in covid cases by the end of the month but at the begging non mask counties were lower than mask counties. 
+Counties that wear masks have dropped lower in covid cases by the end of the month but at the begging non mask counties were lower than mask counties. The non mask had maintained a stable line while the mask droped down in cases.
 
 # Data Viz Review
 
